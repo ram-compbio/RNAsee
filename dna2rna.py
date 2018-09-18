@@ -79,7 +79,11 @@ def pallindrome(rna,loop,length,i,j,columns):
     # Get dna complement of rna stem-loop sequence
     temp_dna = rna2dna(temp_rna)
     # Store all stem-loop info
-    df = pd.DataFrame([[temp_rna,temp_dna,loop,stem,temp_i,temp_j]], columns=columns)
+    if loop == 4:
+        tetra = 1
+    else:
+        tetra = 0
+    df = pd.DataFrame([[temp_rna,temp_dna,tetra,loop,stem,temp_i,temp_j]], columns=columns)
     return df
 
 
@@ -100,7 +104,7 @@ rna = dna2rna(dna)
 print rna
 
 # Create dataframe
-columns=('rna','dna','loop','stem_len','begin','end')
+columns=('rna','dna','tetra','loop_len','stem_len','begin','end')
 df = pd.DataFrame(columns=columns)
 
 size = len(rna)
@@ -116,7 +120,6 @@ while j < size:
             loop = 4
             df = df.append(pallindrome(rna,loop,size,i,j,columns), ignore_index=True)
         else:
-            tetra = 0
             # I should check for tri- and penta-loops here
             shift_i = i+1
             loop = 3
@@ -128,4 +131,5 @@ while j < size:
     j += 1
 # Sort df by stem length (descending)
 df = df.sort_values(by=['stem_len'], ascending=False)
+df = df.sort_values(by=['tetra'], ascending=False)
 print df
