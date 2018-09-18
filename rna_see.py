@@ -1,24 +1,38 @@
-import sys
+#!/usr/bin/env python
+
 import pandas as pd
 from convert import *
 from pallindrome import *
+import argparse
 
-f = open("test/xpo1-mrna.fasta",'r')
-#f = open("test/pcgf3-mrna.fasta",'r')
-#f = open("test/rnh1-full.fasta",'r')
-#f = open("test/sdhb-full.fasta",'r')
-#f = open("test/lrp10-full.fasta",'r')
-#f = open("test/app-full.fasta",'r')
-#f = open("test/ap2a1-full.fasta",'r')
+# Arugments
+parser = argparse.ArgumentParser(prog="RNAsee", description="Search a sequence for putative RNA editing sites by APOBEC3A/G.")
+parser.add_argument('sequence', metavar='sequence', type=str, help="FASTA file for DNA seqeunce input.")
+parser.add_argument('-v', '--version', action='version', version='%(prog)s v0.1')
+parser.add_argument('--rna', action="store_true", help="The FASTA file is an RNA sequence (only A, U, G, C).")
+args=parser.parse_args()
+
+
+# Set variables
+seq = args.sequence
+is_rna = args.rna
+out = seq.split("/")[-1].replace(".fasta","")
+
+# Read in input fasta
+f = open(seq,'r')
 f.readline()
 l = f.readlines()
-dna = ''.join(l)
 
-# Input was DNA
-# Convert to RNA
-rna = dna2rna(dna)
+if is_rna == True:
+    # Input was RNA sequence
+    rna = ''.join(l)
+else:
+    # Input was DNA
+    # Convert to RNA
+    dna = ''.join(l)
+    rna = dna2rna(dna)
 
-# Create dataframe
+# Create dataframes
 columns=('rna','dna','best_loop','loop_len','stem_len','begin','end')
 df_all = pd.DataFrame(columns=columns)
 df3 = pd.DataFrame(columns=columns)
@@ -60,4 +74,4 @@ df3 = df3.sort_values(by=['stem_len'], ascending=False)
 df5 = df5.sort_values(by=['stem_len'], ascending=False)
 # Merge dfs 
 df_all = df_all.append([df4_best,df4,df3,df5], ignore_index=True)
-print df_all
+df_all.to_csv("{}.tsv".format(out),sep='\t',index=False)
