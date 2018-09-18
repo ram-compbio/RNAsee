@@ -48,7 +48,7 @@ def rna2dna(rna):
 
 # Function to determine the length of the pallindromic sequence
 # Stem length
-def pallindrome(rna,loop,length,i,j,columns):
+def pallindrome(rna,best,loop,length,i,j,columns):
     temp_i = i-1
     temp_j = j+1
     stem = 0
@@ -70,7 +70,7 @@ def pallindrome(rna,loop,length,i,j,columns):
         # Keep searching...
         temp_i -= 1
         temp_j += 1
-    if stem < 3:
+    if stem < 4:
         return
     temp_i += 1
     temp_j -= 1
@@ -79,11 +79,7 @@ def pallindrome(rna,loop,length,i,j,columns):
     # Get dna complement of rna stem-loop sequence
     temp_dna = rna2dna(temp_rna)
     # Store all stem-loop info
-    if loop == 4:
-        tetra = 1
-    else:
-        tetra = 0
-    df = pd.DataFrame([[temp_rna,temp_dna,tetra,loop,stem,temp_i,temp_j]], columns=columns)
+    df = pd.DataFrame([[temp_rna,temp_dna,best,loop,stem,temp_i,temp_j]], columns=columns)
     return df
 
 
@@ -91,7 +87,12 @@ def pallindrome(rna,loop,length,i,j,columns):
 #f = open("sdhb-wt.fasta",'r')
 #f = open("sdhb-partial_cds.fasta",'r')
 #f = open("pcgf3-mrna.fasta",'r')
-f = open("sdhb-complete_cds.fasta",'r')
+f = open("rnh1-full.fasta",'r')
+#f = open("sdhb-full.fasta",'r')
+#f = open("lrp10-full.fasta",'r')
+#f = open("app-full.fasta",'r')
+#f = open("ap2a1-full.fasta",'r')
+#f = open("sdhb-complete_cds.fasta",'r')
 #f = open("chromosome-1.fasta",'r')
 f.readline()
 l = f.readlines()
@@ -104,7 +105,7 @@ rna = dna2rna(dna)
 print rna
 
 # Create dataframe
-columns=('rna','dna','tetra','loop_len','stem_len','begin','end')
+columns=('rna','dna','best_loop','loop_len','stem_len','begin','end')
 df = pd.DataFrame(columns=columns)
 
 size = len(rna)
@@ -118,18 +119,23 @@ while j < size:
                 or rna[i:j+1] == 'cuuc' \
                 or rna[i:j+1] == 'uauc':
             loop = 4
-            df = df.append(pallindrome(rna,loop,size,i,j,columns), ignore_index=True)
+            best = 1
+            df = df.append(pallindrome(rna,best,loop,size,i,j,columns), ignore_index=True)
         else:
-            # I should check for tri- and penta-loops here
+            # Check other tetra-loops anyway
+            best = 0
+            loop = 4
+            df = df.append(pallindrome(rna,best,loop,size,i,j,columns), ignore_index=True)
+            # Check for tri- and penta-loops here
             shift_i = i+1
             loop = 3
-            df = df.append(pallindrome(rna,loop,size,shift_i,j,columns), ignore_index=True)
+            df = df.append(pallindrome(rna,best,loop,size,shift_i,j,columns), ignore_index=True)
             shift_i = i-1
             loop = 5
-            df = df.append(pallindrome(rna,loop,size,shift_i,j,columns), ignore_index=True)
+            df = df.append(pallindrome(rna,best,loop,size,shift_i,j,columns), ignore_index=True)
     i += 1
     j += 1
 # Sort df by stem length (descending)
-df = df.sort_values(by=['stem_len'], ascending=False)
-df = df.sort_values(by=['tetra'], ascending=False)
+df = df.sort_values(by=['best_loop','loop_len','stem_len'], ascending=False)
+#df = df.sort_values(by=['tetra'], ascending=False)
 print df
