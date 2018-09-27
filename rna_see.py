@@ -57,20 +57,30 @@ while j < size:
             loop = 4
             best = 1
             temp_df = pallindrome(rna,best,loop,size,i,j,columns)
-            df4_best = df4_best.append(temp_df, ignore_index=True)
-            get_ss(temp_df.iat[0,0])
+            if temp_df.empty:
+                i += 1
+                j += 1
+                continue
+            else:
+                df4_best = df4_best.append(temp_df, ignore_index=True)
         else:
             # Check other tetra-loops anyway
             best = 0
             loop = 4
-            df4 = df4.append(pallindrome(rna,best,loop,size,i,j,columns), ignore_index=True)
+            temp_df = pallindrome(rna,best,loop,size,i,j,columns)
+            if temp_df.empty:
+                df4 = df4.append(temp_df, ignore_index=True)
             # Check for tri- and penta-loops here
             shift_i = i+1
             loop = 3
-            df3 = df3.append(pallindrome(rna,best,loop,size,shift_i,j,columns), ignore_index=True)
+            temp_df = pallindrome(rna,best,loop,size,shift_i,j,columns)
+            if temp_df.empty:
+                df3 = df3.append(temp_df, ignore_index=True)
             shift_i = i-1
             loop = 5
-            df5 = df5.append(pallindrome(rna,best,loop,size,shift_i,j,columns), ignore_index=True)
+            temp_df = pallindrome(rna,best,loop,size,shift_i,j,columns)
+            if temp_df.empty:
+                df5 = df5.append(temp_df, ignore_index=True)
     i += 1
     j += 1
 # Sort df by stem length (descending)
@@ -87,6 +97,9 @@ df_all.to_csv("{}.tsv".format(out),sep='\t',index=False)
 
 # Get MFE secondary structure and energy
 ss, mfe = get_ss(rna)
+
+# Print the 2D Structure Data
+print_ss(rna, ss, mfe, "{}.out".format(out))
 
 # Plot the 2D Structure
 plot_ss(rna, ss, "{}.ps".format(out))

@@ -14,8 +14,13 @@ def get_ss(rna):
     # predict Minmum Free Energy and corresponding secondary structure - Partition Function
 #    (ss, mfe) = fc.pf()
     # print output
-    print "{}\n{} [ {} ]".format(rna, ss, mfe)
+#    print "{}\n{} [ {} ]".format(rna, ss, mfe)
     return ss, mfe
+
+def print_ss(rna, ss, mfe, out_name):
+    # Print Sequence, SS, and Energy to file
+    f = open(out_name, 'w')
+    f.write('{}\n{}\n{}'.format(rna, ss, mfe))
 
 def plot_ss(rna, ss, out_name):
     # create a new model details structure

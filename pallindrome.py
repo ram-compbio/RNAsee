@@ -5,6 +5,7 @@ from secondary_struct import *
 # Function to determine the length of the pallindromic sequence
 # Stem length
 def pallindrome(rna,best,loop,length,i,j,columns):
+    df = pd.DataFrame()
     temp_i = i-1
     temp_j = j+1
     stem = 0
@@ -22,8 +23,8 @@ def pallindrome(rna,best,loop,length,i,j,columns):
         # Keep searching...
         temp_i -= 1
         temp_j += 1
-#    if stem <= 1:
-#        return
+    if stem <= 1:
+        return df
     temp_i += 1
     temp_j -= 1
     # Temp store stem-loop sequence
