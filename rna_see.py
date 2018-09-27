@@ -3,7 +3,9 @@
 import pandas as pd
 from convert import *
 from pallindrome import *
+from secondary_struct import *
 import argparse
+import RNA
 
 # Arugments
 parser = argparse.ArgumentParser(prog="RNAsee", description="Search a sequence for putative RNA editing sites by APOBEC3A/G.")
@@ -26,14 +28,16 @@ l = f.readlines()
 if is_rna == True:
     # Input was RNA sequence
     rna = ''.join(l)
+    rna = rna.lower()
 else:
     # Input was DNA
     # Convert to RNA
     dna = ''.join(l)
+    dna = dna.lower()
     rna = dna2rna(dna)
 
 # Create dataframes
-columns=('rna','dna','best_loop','loop_len','stem_len','begin','end')
+columns=('rna','dna','secondary_struct','best_loop','loop_len','stem_len','begin','end','mfe')
 df_all = pd.DataFrame(columns=columns)
 df3 = pd.DataFrame(columns=columns)
 df4 = pd.DataFrame(columns=columns)
@@ -52,7 +56,9 @@ while j < size:
                 or rna[i:j+1] == 'uauc':
             loop = 4
             best = 1
-            df4_best = df4_best.append(pallindrome(rna,best,loop,size,i,j,columns), ignore_index=True)
+            temp_df = pallindrome(rna,best,loop,size,i,j,columns)
+            df4_best = df4_best.append(temp_df, ignore_index=True)
+            get_ss(temp_df.iat[0,0])
         else:
             # Check other tetra-loops anyway
             best = 0
@@ -68,10 +74,19 @@ while j < size:
     i += 1
     j += 1
 # Sort df by stem length (descending)
-df4_best = df4_best.sort_values(by=['stem_len'], ascending=False)
+df4_best = df4_best.sort_values(by=['stem_len','mfe'], ascending=False)
+df4 = df4.sort_values(by=['mfe'], ascending=True)
 df4 = df4.sort_values(by=['stem_len'], ascending=False)
-df3 = df3.sort_values(by=['stem_len'], ascending=False)
-df5 = df5.sort_values(by=['stem_len'], ascending=False)
+df3 = df3.sort_values(by=['stem_len','mfe'], ascending=False)
+df5 = df5.sort_values(by=['stem_len','mfe'], ascending=False)
+
 # Merge dfs 
 df_all = df_all.append([df4_best,df4,df3,df5], ignore_index=True)
+print (df_all)
 df_all.to_csv("{}.tsv".format(out),sep='\t',index=False)
+
+# Get MFE secondary structure and energy
+ss, mfe = get_ss(rna)
+
+# Plot the 2D Structure
+plot_ss(rna, ss, "{}.ps".format(out))

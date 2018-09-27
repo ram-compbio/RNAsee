@@ -1,5 +1,6 @@
 import pandas as pd
 from convert import *
+from secondary_struct import *
 
 # Function to determine the length of the pallindromic sequence
 # Stem length
@@ -21,14 +22,16 @@ def pallindrome(rna,best,loop,length,i,j,columns):
         # Keep searching...
         temp_i -= 1
         temp_j += 1
-    if stem < 4:
-        return
+#    if stem <= 1:
+#        return
     temp_i += 1
     temp_j -= 1
     # Temp store stem-loop sequence
     temp_rna = rna[temp_i:temp_j+1]
     # Get dna complement of rna stem-loop sequence
     temp_dna = rna2dna(temp_rna)
+    # Get secondary structure and energy
+    ss, mfe = get_ss(temp_rna)
     # Store all stem-loop info
-    df = pd.DataFrame([[temp_rna,temp_dna,best,loop,stem,temp_i,temp_j]], columns=columns)
+    df = pd.DataFrame([[temp_rna,temp_dna,ss,best,loop,stem,temp_i,temp_j,mfe]], columns=columns)
     return df
