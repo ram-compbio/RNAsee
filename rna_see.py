@@ -6,6 +6,7 @@ from pallindrome import *
 from secondary_struct import *
 import argparse
 import RNA
+import os
 
 # Arugments
 parser = argparse.ArgumentParser(prog="RNAsee", description="Search a sequence for putative RNA editing sites by APOBEC3A/G.")
@@ -47,6 +48,8 @@ df5 = pd.DataFrame(columns=columns)
 size = len(rna)
 i = 0
 j = i+3
+struct = 1
+if not os.path.exists(out): os.mkdir(out)
 while j < size:
     if rna[j] == 'c':
         if rna[i:j+1] == 'cauc' \
@@ -57,29 +60,29 @@ while j < size:
             loop = 4
             best = 1
             temp_df = pallindrome(rna,best,loop,size,i,j,columns)
-            if temp_df.empty:
-                i += 1
-                j += 1
-                continue
-            else:
+            if not temp_df.empty:
                 df4_best = df4_best.append(temp_df, ignore_index=True)
+                # Plot the 2D Structure
+                print(temp_df.loc[0,'rna'])
+                plot_ss(temp_df.loc[0,'rna'], temp_df.loc[0,'secondary_struct'], "{}/{}.ps".format(out,struct))
+                struct += 1
         else:
             # Check other tetra-loops anyway
             best = 0
             loop = 4
             temp_df = pallindrome(rna,best,loop,size,i,j,columns)
-            if temp_df.empty:
+            if not temp_df.empty:
                 df4 = df4.append(temp_df, ignore_index=True)
             # Check for tri- and penta-loops here
             shift_i = i+1
             loop = 3
             temp_df = pallindrome(rna,best,loop,size,shift_i,j,columns)
-            if temp_df.empty:
+            if not temp_df.empty:
                 df3 = df3.append(temp_df, ignore_index=True)
             shift_i = i-1
             loop = 5
             temp_df = pallindrome(rna,best,loop,size,shift_i,j,columns)
-            if temp_df.empty:
+            if not temp_df.empty:
                 df5 = df5.append(temp_df, ignore_index=True)
     i += 1
     j += 1

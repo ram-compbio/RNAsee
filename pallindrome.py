@@ -23,7 +23,7 @@ def pallindrome(rna,best,loop,length,i,j,columns):
         # Keep searching...
         temp_i -= 1
         temp_j += 1
-    if stem <= 1:
+    if stem < 1:
         return df
     temp_i += 1
     temp_j -= 1
@@ -34,5 +34,5 @@ def pallindrome(rna,best,loop,length,i,j,columns):
     # Get secondary structure and energy
     ss, mfe = get_ss(temp_rna)
     # Store all stem-loop info
-    df = pd.DataFrame([[temp_rna,temp_dna,ss,best,loop,stem,temp_i,temp_j,mfe]], columns=columns)
+    df = pd.DataFrame([[temp_rna,temp_dna,ss,best,loop,stem,temp_i+1,temp_j+1,mfe]], columns=columns)
     return df
