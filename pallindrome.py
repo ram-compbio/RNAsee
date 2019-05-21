@@ -55,6 +55,28 @@ def pallindrome(rna,best,loop,length,pos_c,i,j,columns):
     temp_dna = rna2dna(temp_rna)
     # Get secondary structure and energy
     ss, mfe = get_ss(temp_rna)
+
+    # Leave commented for now...need to test more
+    '''
+    # Get secondary structure and energy
+    # of a larger subsequence (length of 40nt)
+    if bulge:
+        diff = temp_j - temp_i + 1
+    else:
+        diff = temp_j - temp_i
+    change = (40 - diff) / 2
+    if temp_i - change >= 0 and temp_j + change <= len (rna):
+        temp_rna_large = rna[temp_i-change:temp_j+change+1]
+        ss_large, mfe = get_ss(temp_rna_large)
+    elif temp_i - change < 0:
+        temp_rna_large = rna[0:temp_j+1+temp_i]
+        ss_large, mfe = get_ss(temp_rna_large)
+    elif temp_j + change > len(rna):
+        diff = len(rna) - temp_j
+        temp_rna_large = rna[temp_i-diff:len(rna)+1]
+        ss_large, mfe = get_ss(temp_rna_large)
+    '''
+
     # Store all stem-loop info
     df = pd.DataFrame([[temp_rna,temp_dna,ss,best,loop,stem,bulge,pos_c,temp_i+1,temp_j+1,mfe]], columns=columns)
     return df

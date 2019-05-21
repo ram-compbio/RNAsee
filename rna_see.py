@@ -124,7 +124,7 @@ while j < size:
     i += 1
     j += 1
 # Sort df by stem length (descending)
-df4_best = df4_best.sort_values(by=['stem_len','mfe'], ascending=False)
+df4_best = df4_best.sort_values(by=['stem_len','mfe'], ascending=[False,True])
 df4 = df4.sort_values(by=['mfe'], ascending=True)
 df4 = df4.sort_values(by=['stem_len'], ascending=False)
 df3 = df3.sort_values(by=['stem_len','mfe'], ascending=False)
