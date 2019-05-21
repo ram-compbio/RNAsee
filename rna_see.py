@@ -41,9 +41,9 @@ else:
 
 # Create dataframes
 if tetraloop:
-    columns=('rna','dna','secondary_struct','best_loop','loop_len','stem_len','pos_c','begin','end','mfe')
+    columns=('rna','dna','secondary_struct','best_loop','loop_len','stem_len','bulge','pos_c','begin','end','mfe')
 else:
-    columns=('rna','dna','secondary_struct','cc/uc','loop_len','stem_len','pos_c','begin','end','mfe')
+    columns=('rna','dna','secondary_struct','cc/uc','loop_len','stem_len','bulge','pos_c','begin','end','mfe')
 df_all = pd.DataFrame(columns=columns)
 df3 = pd.DataFrame(columns=columns)
 df4 = pd.DataFrame(columns=columns)
