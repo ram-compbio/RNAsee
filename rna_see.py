@@ -38,7 +38,7 @@ else:
     rna = dna2rna(dna)
 
 # Create dataframes
-columns=('rna','dna','secondary_struct','best_loop','loop_len','stem_len','begin','end','mfe')
+columns=('rna','dna','secondary_struct','best_loop','loop_len','stem_len','pos_c','begin','end','mfe')
 df_all = pd.DataFrame(columns=columns)
 df3 = pd.DataFrame(columns=columns)
 df4 = pd.DataFrame(columns=columns)
@@ -52,14 +52,16 @@ struct = 1
 if not os.path.exists(out): os.mkdir(out)
 while j < size:
     if rna[j] == 'c':
-        if rna[i:j+1] == 'cauc' \
-                or rna[i:j+1] == 'cacc' \
-                or rna[i:j+1] == 'ccuc' \
-                or rna[i:j+1] == 'cuuc' \
-                or rna[i:j+1] == 'uauc':
+        pos_c = j+1
+        #if rna[i:j+1] == 'cauc' \
+        #        or rna[i:j+1] == 'cacc' \
+        #        or rna[i:j+1] == 'ccuc' \
+        #        or rna[i:j+1] == 'cuuc' \
+        #        or rna[i:j+1] == 'uauc':
+        if rna[j-1] == 'u' or rna[j-1] == 'c':
             loop = 4
             best = 1
-            temp_df = pallindrome(rna,best,loop,size,i,j,columns)
+            temp_df = pallindrome(rna,best,loop,size,pos_c,i,j,columns)
             if not temp_df.empty:
                 df4_best = df4_best.append(temp_df, ignore_index=True)
                 # Plot the 2D Structure
@@ -70,18 +72,18 @@ while j < size:
             # Check other tetra-loops anyway
             best = 0
             loop = 4
-            temp_df = pallindrome(rna,best,loop,size,i,j,columns)
+            temp_df = pallindrome(rna,best,loop,size,pos_c,i,j,columns)
             if not temp_df.empty:
                 df4 = df4.append(temp_df, ignore_index=True)
             # Check for tri- and penta-loops here
             shift_i = i+1
             loop = 3
-            temp_df = pallindrome(rna,best,loop,size,shift_i,j,columns)
+            temp_df = pallindrome(rna,best,loop,size,pos_c,shift_i,j,columns)
             if not temp_df.empty:
                 df3 = df3.append(temp_df, ignore_index=True)
             shift_i = i-1
             loop = 5
-            temp_df = pallindrome(rna,best,loop,size,shift_i,j,columns)
+            temp_df = pallindrome(rna,best,loop,size,pos_c,shift_i,j,columns)
             if not temp_df.empty:
                 df5 = df5.append(temp_df, ignore_index=True)
     i += 1
@@ -96,7 +98,7 @@ df5 = df5.sort_values(by=['stem_len','mfe'], ascending=False)
 # Merge dfs 
 df_all = df_all.append([df4_best,df4,df3,df5], ignore_index=True)
 print (df_all)
-df_all.to_csv("{}.tsv".format(out),sep='\t',index=False)
+df_all.to_csv("{}.tsv".format(out),sep='\t')
 
 # Get MFE secondary structure and energy
 ss, mfe = get_ss(rna)

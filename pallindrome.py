@@ -4,7 +4,7 @@ from secondary_struct import *
 
 # Function to determine the length of the pallindromic sequence
 # Stem length
-def pallindrome(rna,best,loop,length,i,j,columns):
+def pallindrome(rna,best,loop,length,pos_c,i,j,columns):
     df = pd.DataFrame()
     temp_i = i-1
     temp_j = j+1
@@ -34,5 +34,5 @@ def pallindrome(rna,best,loop,length,i,j,columns):
     # Get secondary structure and energy
     ss, mfe = get_ss(temp_rna)
     # Store all stem-loop info
-    df = pd.DataFrame([[temp_rna,temp_dna,ss,best,loop,stem,temp_i+1,temp_j+1,mfe]], columns=columns)
+    df = pd.DataFrame([[temp_rna,temp_dna,ss,best,loop,stem,pos_c,temp_i+1,temp_j+1,mfe]], columns=columns)
     return df
