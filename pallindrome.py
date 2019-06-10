@@ -2,8 +2,18 @@ import pandas as pd
 from convert import *
 from secondary_struct import *
 
-# Bulge check function
 def check_bulge(rna,temp_i,temp_j):
+    """ Check if a 1 nucelotide bulge exists at the position temp_j.
+
+    Parameters:
+        rna (str): Full RNA sequence
+        temp_i (int): current left position (index of rna) of the stem-loop being analyzed
+        temp_j (int): current right position (index of rna) of the stem-loop being analyzed
+
+    Returns:
+        bool: Does a 1 nucleotide bulge exist at this position
+    """
+
     temp_j+=1
     if rna[temp_i] == 'c' and rna[temp_j] == 'g':
         return True

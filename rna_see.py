@@ -110,12 +110,18 @@ while j < size:
                 temp_df = pallindrome(rna,best,loop,size,pos_c,i,j,columns)
                 if not temp_df.empty:
                     df4 = df4.append(temp_df, ignore_index=True)
+                    i += 1
+                    j += 1
+                    continue
                 # Check for tri- and penta-loops here
                 shift_i = i+1
                 loop = 3
                 temp_df = pallindrome(rna,best,loop,size,pos_c,shift_i,j,columns)
                 if not temp_df.empty:
                     df3 = df3.append(temp_df, ignore_index=True)
+                    i += 1
+                    j += 1
+                    continue
                 shift_i = i-1
                 loop = 5
                 temp_df = pallindrome(rna,best,loop,size,pos_c,shift_i,j,columns)
