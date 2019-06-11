@@ -11,7 +11,7 @@ import os
 # Arugments
 parser = argparse.ArgumentParser(prog="RNAsee", description="Search a sequence for putative RNA editing sites by APOBEC3A/G.")
 parser.add_argument('sequence', metavar='sequence', type=str, help="FASTA file for DNA seqeunce input.")
-parser.add_argument('--tetraloop','-t', metavar='tetraloop', type=bool, help="If true, rank based upon specific tetraloop (CUAC, CACC, CCUC, CUUC, and UAUC). Otherwise, just rank by UC or CC in the [1,0] positions.", default=False)
+parser.add_argument('--tetraloop','-t', action="store_true", help="Search and rank based upon specific tetraloop (CUAC, CACC, CCUC, CUUC, and UAUC).", default=False)
 parser.add_argument('-v', '--version', action='version', version='%(prog)s v0.1')
 parser.add_argument('--rna', action="store_true", help="The FASTA file is an RNA sequence (only A, U, G, C).")
 args=parser.parse_args()
@@ -21,6 +21,7 @@ args=parser.parse_args()
 seq = args.sequence
 is_rna = args.rna
 tetraloop = args.tetraloop
+print(tetraloop)
 out = seq.split("/")[-1].replace(".fasta","")
 
 # Read in input fasta
