@@ -9,8 +9,10 @@
 ## 5-21-19
 - Add option to use best tetraloop from the 2015 Bora and Shraddha paper https://www.nature.com/articles/ncomms7881.
 - Add function to check for bulge at the -2 position automatically. If true, it will continue the stem search.
-- Change energy and stem ranknig to ascending and descending, respectively.
+- Change energy and stem ranking to ascending and descending, respectively.
 - Add larger subsequence energy estimates
 	- Commented for now. 
 	- Review and test later
 
+## 6-11-19
+- Add 16k gene sequences (CCDS.tar.gz)
