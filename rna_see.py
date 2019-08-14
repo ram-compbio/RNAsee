@@ -1,12 +1,28 @@
 #!/usr/bin/env python
 
+from Bio.Seq import *
 import pandas as pd
 from convert import *
 from pallindrome import *
 from secondary_struct import *
 import argparse
 import RNA
-import os
+import os, math
+
+def aa_change(pos_c,prot,rna,j):
+    pos = math.ceil(pos_c/3.0)
+    # Edit the C>U
+    temp_rna = list(rna)
+    temp_rna[j] = 'u'
+    temp_rna = ''.join(temp_rna)
+    # Translate the edited sequence
+    temp_prot = translate(temp_rna)
+    if prot[pos-1] != temp_prot[pos-1]:
+        f = "{} -> {}".format(prot[pos-1],temp_prot[pos-1])
+    else:
+        f = "synonymous"
+    return f,pos
+
 
 if __name__ == '__main__':
     # Arugments
@@ -22,7 +38,6 @@ if __name__ == '__main__':
     seq = args.sequence
     is_rna = args.rna
     tetraloop = args.tetraloop
-    print(tetraloop)
     out = seq.split("/")[-1].replace(".fasta","")
     
     # Read in input fasta
@@ -41,6 +56,8 @@ if __name__ == '__main__':
         dna = dna.lower()
         rna = dna2rna(dna)
     
+    prot = translate(rna)
+
     # Create dataframes
     if tetraloop:
         columns=('rna','dna','secondary_struct','best_loop','loop_len','stem_len','bulge','pos_c','begin','end','mfe')
@@ -69,10 +86,14 @@ if __name__ == '__main__':
                     loop = 4
                     best = 1
                     temp_df = pallindrome(rna,best,loop,size,pos_c,i,j,columns)
+                    a,b = aa_change(pos_c,prot,rna,j)
+                    temp_df['aa_change'] = a
+                    temp_df['aa_pos'] = int(b)
+
                     if not temp_df.empty:
-                        df4_best = df4_best.append(temp_df, ignore_index=True)
+                        df4_best = df4_best.append(temp_df, ignore_index=True, sort=False)
                         # Plot the 2D Structure
-                        print(temp_df.loc[0,'rna'])
+                        #print(temp_df.loc[0,'rna'])
                         plot_ss(temp_df.loc[0,'rna'], temp_df.loc[0,'secondary_struct'], "{}/{}.ps".format(out,struct))
                         struct += 1
                 else:
@@ -80,29 +101,43 @@ if __name__ == '__main__':
                     best = 0
                     loop = 4
                     temp_df = pallindrome(rna,best,loop,size,pos_c,i,j,columns)
+                    a,b = aa_change(pos_c,prot,rna,j)
+                    temp_df['aa_change'] = a
+                    temp_df['aa_pos'] = int(b)
                     if not temp_df.empty:
-                        df4 = df4.append(temp_df, ignore_index=True)
+                        df4 = df4.append(temp_df, ignore_index=True, sort=False)
+                    
                     # Check for tri- and penta-loops here
                     shift_i = i+1
                     loop = 3
                     temp_df = pallindrome(rna,best,loop,size,pos_c,shift_i,j,columns)
+                    a,b = aa_change(pos_c,prot,rna,j)
+                    temp_df['aa_change'] = a
+                    temp_df['aa_pos'] = int(b)
                     if not temp_df.empty:
-                        df3 = df3.append(temp_df, ignore_index=True)
+                        df3 = df3.append(temp_df, ignore_index=True, sort=False)
+
                     shift_i = i-1
                     loop = 5
                     temp_df = pallindrome(rna,best,loop,size,pos_c,shift_i,j,columns)
+                    a,b = aa_change(pos_c,prot,rna,j)
+                    temp_df['aa_change'] = a
+                    temp_df['aa_pos'] = int(b)
                     if not temp_df.empty:
-                        df5 = df5.append(temp_df, ignore_index=True)
+                        df5 = df5.append(temp_df, ignore_index=True, sort=False)
     
             else:
                 if rna[j-1] == 'u' or rna[j-1] == 'c':
                     loop = 4
                     best = 1
                     temp_df = pallindrome(rna,best,loop,size,pos_c,i,j,columns)
+                    a,b = aa_change(pos_c,prot,rna,j)
+                    temp_df['aa_change'] = a
+                    temp_df['aa_pos'] = int(b)
                     if not temp_df.empty:
-                        df4_best = df4_best.append(temp_df, ignore_index=True)
+                        df4_best = df4_best.append(temp_df, ignore_index=True, sort=False)
                         # Plot the 2D Structure
-                        print(temp_df.loc[0,'rna'])
+                        #print(temp_df.loc[0,'rna'])
                         plot_ss(temp_df.loc[0,'rna'], temp_df.loc[0,'secondary_struct'], "{}/{}.ps".format(out,struct))
                         struct += 1
                 else:
@@ -110,25 +145,36 @@ if __name__ == '__main__':
                     best = 0
                     loop = 4
                     temp_df = pallindrome(rna,best,loop,size,pos_c,i,j,columns)
+                    a,b = aa_change(pos_c,prot,rna,j)
+                    temp_df['aa_change'] = a
+                    temp_df['aa_pos'] = int(b)
                     if not temp_df.empty:
-                        df4 = df4.append(temp_df, ignore_index=True)
+                        df4 = df4.append(temp_df, ignore_index=True, sort=False)
                         i += 1
                         j += 1
                         continue
+
                     # Check for tri- and penta-loops here
                     shift_i = i+1
                     loop = 3
                     temp_df = pallindrome(rna,best,loop,size,pos_c,shift_i,j,columns)
+                    a,b = aa_change(pos_c,prot,rna,j)
+                    temp_df['aa_change'] = a
+                    temp_df['aa_pos'] = int(b)
                     if not temp_df.empty:
-                        df3 = df3.append(temp_df, ignore_index=True)
+                        df3 = df3.append(temp_df, ignore_index=True, sort=False)
                         i += 1
                         j += 1
                         continue
+                    
                     shift_i = i-1
                     loop = 5
                     temp_df = pallindrome(rna,best,loop,size,pos_c,shift_i,j,columns)
+                    a,b = aa_change(pos_c,prot,rna,j)
+                    temp_df['aa_change'] = a
+                    temp_df['aa_pos'] = int(b)
                     if not temp_df.empty:
-                        df5 = df5.append(temp_df, ignore_index=True)
+                        df5 = df5.append(temp_df, ignore_index=True, sort=False)
         i += 1
         j += 1
     # Sort df by stem length (descending)
@@ -139,9 +185,15 @@ if __name__ == '__main__':
     df5 = df5.sort_values(by=['stem_len','mfe'], ascending=False)
     
     # Merge dfs 
-    df_all = df_all.append([df4_best,df4,df3,df5], ignore_index=True)
-    print (df_all)
-    df_all.to_csv("{}.tsv".format(out),sep='\t')
+    df_all = df_all.append([df4_best,df4,df3,df5], ignore_index=True, sort=False)
+    df_all['rank'] = df_all.index+1
+    df_all = df_all.astype({'aa_pos':int})
+    if tetraloop:
+        df_all = df_all[['rank','pos_c','begin','end','loop_len','stem_len','best_loop','bulge','dna','rna','secondary_struct','mfe','aa_change','aa_pos']]
+    else:
+        df_all = df_all[['rank','pos_c','begin','end','loop_len','stem_len','cc/uc','bulge','dna','rna','secondary_struct','mfe','aa_change','aa_pos']]
+    print(df_all)
+    df_all.to_csv("{}.tsv".format(out),sep='\t',float_format='%.2f')
     
     # Get MFE secondary structure and energy
     ss, mfe = get_ss(rna)
