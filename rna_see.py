@@ -192,6 +192,7 @@ def see(seq, is_rna=False, tetraloop=False):
     # Plot the 2D Structure
     plot_ss(rna, ss, "{}.ps".format(out))
 
+    return df_all
 
 if __name__ == '__main__':
     # Arugments
@@ -207,5 +208,5 @@ if __name__ == '__main__':
     is_rna = args.rna
     tetraloop = args.tetraloop
     
-    see(seq, is_rna, tetraloop)
+    df = see(seq, is_rna, tetraloop)
  
