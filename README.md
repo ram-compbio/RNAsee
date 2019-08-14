@@ -1,4 +1,4 @@
-<!--[![GitHub release](https://img.shields.io/github/release/zfalls/RNAsee.svg)](https://github.com/zfalls/RNAsee/releases)-->
+[![GitHub release](https://img.shields.io/github/tag-pre/zfalls/RNAsee.svg)](https://github.com/zfalls/RNAsee/releases)
 [![Build Status](https://travis-ci.org/zfalls/RNAsee.png)](https://travis-ci.org/zmfalls/RNAsee)
 [![codecov](https://codecov.io/gh/zfalls/RNAsee/branch/master/graph/badge.svg)](https://codecov.io/gh/zmfalls/RNAsee)
 <!--[![Github All Releases](https://img.shields.io/github/downloads/zfalls/RNAsee/total.svg)](https://github.com/zfalls/RNAsee/downloads/total)-->
