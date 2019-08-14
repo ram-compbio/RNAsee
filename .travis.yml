@@ -22,9 +22,6 @@ install:
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
       conda install python=2.7;
     
-    elif [[ "$TRAVIS_PYTHON_VERSION" == "3.5" ]]; then
-      conda install python=3.5;
-    
     elif [[ "$TRAVIS_PYTHON_VERSION" == "3.6" ]]; then
       conda install python=3.6;
     
