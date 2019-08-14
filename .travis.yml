@@ -19,6 +19,7 @@ install:
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
+  - conda init bash
   - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
       conda create -n rnasee python=2.7;
       conda activate rnasee;
