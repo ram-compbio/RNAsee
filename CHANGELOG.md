@@ -16,3 +16,9 @@
 
 ## 6-11-19
 - Add 16k gene sequences (CCDS.tar.gz)
+
+## 9-14-19
+- Add resulting amino acid mutation data to output
+- Change output dataframe column order
+- Change `rna_see` to now leverage a function `see`. `main` functionality remains the same.
+
