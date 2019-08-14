@@ -24,21 +24,8 @@ def aa_change(pos_c,prot,rna,j):
         f = "synonymous"
     return f,pos
 
-
-if __name__ == '__main__':
-    # Arugments
-    parser = argparse.ArgumentParser(prog="RNAsee", description="Search a sequence for putative RNA editing sites by APOBEC3A/G.")
-    parser.add_argument('sequence', metavar='sequence', type=str, help="FASTA file for DNA seqeunce input.")
-    parser.add_argument('--tetraloop','-t', action="store_true", help="Search and rank based upon specific tetraloop (CUAC, CACC, CCUC, CUUC, and UAUC).", default=False)
-    parser.add_argument('-v', '--version', action='version', version='%(prog)s v0.1')
-    parser.add_argument('--rna', action="store_true", help="The FASTA file is an RNA sequence (only A, U, G, C).")
-    args=parser.parse_args()
-    
-    
-    # Set variables
-    seq = args.sequence
-    is_rna = args.rna
-    tetraloop = args.tetraloop
+   
+def see(seq, is_rna=False, tetraloop=False): 
     out = seq.split("/")[-1].replace(".fasta","")
     
     # Read in input fasta
@@ -204,3 +191,21 @@ if __name__ == '__main__':
     
     # Plot the 2D Structure
     plot_ss(rna, ss, "{}.ps".format(out))
+
+
+if __name__ == '__main__':
+    # Arugments
+    parser = argparse.ArgumentParser(prog="RNAsee", description="Search a sequence for putative RNA editing sites by APOBEC3A/G.")
+    parser.add_argument('sequence', metavar='sequence', type=str, help="FASTA file for DNA seqeunce input.")
+    parser.add_argument('--tetraloop','-t', action="store_true", help="Search and rank based upon specific tetraloop (CUAC, CACC, CCUC, CUUC, and UAUC).", default=False)
+    parser.add_argument('-v', '--version', action='version', version='%(prog)s v0.2')
+    parser.add_argument('--rna', action="store_true", help="The FASTA file is an RNA sequence (only A, U, G, C).")
+    args=parser.parse_args()
+    
+    # Set variables
+    seq = args.sequence
+    is_rna = args.rna
+    tetraloop = args.tetraloop
+    
+    see(seq, is_rna, tetraloop)
+ 

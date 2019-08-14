@@ -32,8 +32,8 @@ install:
 
 script:
   # Your test script goes here
-  - ./test.sh
-  - coverage run test.sh
+  - python test.py
+  - coverage run test.py
 
 # Push the results back to codecov
 after_success:
