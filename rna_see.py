@@ -10,7 +10,8 @@ import RNA
 import os, math
 
 def aa_change(pos_c,prot,rna,j):
-    pos = math.ceil(pos_c/3.0)
+    pos = math.ceil(pos_c/3)
+    pos = int(pos)
     # Edit the C>U
     temp_rna = list(rna)
     temp_rna[j] = 'u'
