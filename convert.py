@@ -17,8 +17,9 @@ def dna2rna(dna):
         elif i == 'c':
             rna += ['c']
         else:
-            print("Unknown nucleotide {}...exiting program".format(i))
-            sys.exit()
+            rna += [i]
+            #print("Unknown nucleotide {}...exiting program".format(i))
+            #sys.exit()
     rna = ''.join(rna)
     return rna
 
@@ -38,8 +39,11 @@ def rna2dna(rna):
             dna += ['g']
         elif i == 'c':
             dna += ['c']
+        elif i == 'n':
+            dna += ['n']
         else:
-            print("Unknown nucleotide {}...exiting program".format(i))
-            sys.exit()
+            rna += [i]
+            #print("Unknown nucleotide {}...exiting program".format(i))
+            #sys.exit()
     dna = ''.join(dna)
     return dna
