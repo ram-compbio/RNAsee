@@ -1,7 +1,7 @@
 import rna_see
 import ML_methods
 
-def union(file_path, ML_model='current_model.pickle', cutoff=10):
+def union(file_path, ML_model='current_model.pickle'):
   '''
   file_path - str, path to FASTA file for consideration
   ML_model - str, path to pickle file with machine learning model
@@ -11,7 +11,7 @@ def union(file_path, ML_model='current_model.pickle', cutoff=10):
   Returns list of ints, sites considered editing sites by ML model OR RNASee
   '''
   union_sites = ML_methods.scan_gene(ML_model, file_path)
-  see_output = rna_see.see(file_path, cutoff=10)['pos_c']
+  see_output = rna_see.see(file_path, threshold=9)['pos_c']
 
   for loc in see_output.values:
     if loc not in union_sites:
@@ -27,14 +27,13 @@ def intersection(file_path, ML_model='current_model.pickle'):
 
   Returns list of ints, sites considered editing sites by ML model AND RNASee
   '''
-  see_output = rules_based_methods.scan_gene(file_path, threshold=9)['pos_c']
-  
+  see_output = rna_see.see(file_path, threshold=9)['pos_c']
   inter_sites = ML_methods.scan_gene(ML_model, file_path,\
                                    subset=see_output.values)
 
   return inter_sites
 
-def both_consensus(file_path, ML_model='current_model.pickle', cutoff=10):
+def both_consensus(file_path, ML_model='current_model.pickle'):
   '''
   file_path - str, path to FASTA file for consideration
   ML_model - str, path to pickle file with machine learning model
@@ -46,7 +45,7 @@ def both_consensus(file_path, ML_model='current_model.pickle', cutoff=10):
     intersection - list of sites considered editing by ML AND RNASee
   '''
   ML_output = ML_methods.scan_gene(ML_model, file_path)
-  see_output = rna_see.see(file_path, cutoff=10)['pos_c']
+  see_output = rna_see.see(file_path, threshold=9)['pos_c']
 
   inter_sites = []
   union_sites = []

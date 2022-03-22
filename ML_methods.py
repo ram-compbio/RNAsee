@@ -208,7 +208,7 @@ def random_forest_creation(positive_vectors, negative_vectors, neg_selected):
     pickle containing optimized random forest as determined by a grid search
   '''
   # Gets list of vectors
-    with open(positive_vectors, 'r') as f:
+  with open(positive_vectors, 'r') as f:
     pos_lines = f.read().strip().split('\n')
 
   if pos_lines[0].split(',')[1] not in ['0', '1']:
@@ -226,7 +226,7 @@ def random_forest_creation(positive_vectors, negative_vectors, neg_selected):
 
   # Gets a list of non-editing sites for use in training set
   # Allows selection of a subset of non-editing sites for more even ratio
-   with open(neg_selected, 'r') as f:
+  with open(neg_selected, 'r') as f:
     strat_set = f.read().strip().split('\n')[1:]
 
   neg_genes = {}

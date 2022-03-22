@@ -35,13 +35,15 @@ def aa_change(pos_c,prot,rna,j):
     return f,pos
 
    
-def see(seq, is_rna=False, cutoff=None):
+def see(seq, is_rna=False, cutoff=None, threshold=9, make_output=False):
     '''
     seq - str, location of fasta file to be considered
         must be a coding sequence, not full DNA/RNA, for aa_change
         must have a comment/non-code sequence on first line
     is_rna - bool, True if seq refers to a FASTA containing "U" instead of "T"
-    cutoff - int, number of sites to be returned; all returned for cutoff=None
+    cutoff - int, number of sites to be returned; defaults to threshold if None
+    threshold - int, score threshold OVER which site will be considered positive
+    make_output - bool, if True will generate a file with info on included sites
 
     Generates a tsv file containing sorted potential APOBEC3A/G editing sites
         in same directory as the fasta file
@@ -118,17 +120,18 @@ def see(seq, is_rna=False, cutoff=None):
         i += 1
         j += 1
 
-    # Combine DataFrames and sort according to score
-    df_all = df_all.append([df4, df3], ignore_index=True)
-    df_all = df_all.sort_values(by=['score', 'stem_len'],\
-                                ascending=[False, False])
-    df_all = df_all.drop_duplicates(subset='pos_c', keep='first')
-
     # Generate file and return DataFrame
     if cutoff != None:
-        df_all[:cutoff].to_csv('{}-top{}.tsv'.format(out, cutoff),sep='\t',float_format='%.2f')
+        df_all = df_all[:cutoff]
+        if make_output:
+            df_all.to_csv('{}-top{}.tsv'.format(out, cutoff),sep='\t',float_format='%.2f')
+    elif threshold != None:
+        df_all = df_all[df_all['score']>threshold]
+        if make_output:
+            df_all.to_csv('{}-thresh{}.tsv'.format(out, threshold),sep='\t',float_format='%.2f')
     else:
-        df_all.to_csv('{}.tsv'.format(out),sep='\t',float_format='%.2f')
+        if make_output:
+            df_all.to_csv('{}-full.tsv'.format(out),sep='\t',float_format='%.2f')
     return df_all[:cutoff] if cutoff else df_all
 
 
@@ -137,6 +140,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog="RNAsee", description="Search a sequence for putative RNA editing sites by APOBEC3A/G.")
     parser.add_argument('sequence', metavar='sequence', type=str, help="FASTA file for DNA seqeunce input.")
     parser.add_argument('--cutoff','-c', type=int, help="Return only the top X high-scoring values.")
+    parser.add_argument('--threshold', '-t', type=int, help="Return only the sites with a score of >= threshold.")
     parser.add_argument('-v', '--version', action='version', version='%(prog)s v0.2')
     parser.add_argument('--rna', action="store_true", help="The FASTA file is an RNA sequence (only A, U, G, C).")
     args=parser.parse_args()
@@ -144,4 +148,5 @@ if __name__ == '__main__':
     seq = args.sequence
     is_rna = args.rna
     cutoff = args.cutoff
-    df = see(seq, is_rna, cutoff=cutoff)
+    threshold = args.threshold
+    df = see(seq, is_rna, cutoff=cutoff, threshold=threshold)
