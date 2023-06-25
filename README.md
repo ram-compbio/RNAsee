@@ -7,10 +7,6 @@
 **RNA** **s**ite **e**diting **e**valuation (**RNAsee**) is a bioinformatic python script that predicts APOBEC3A/G mediated C>U edit sites for any gene.
 
 ## Installation
-Must have RNAfold installed (ViennaRNA - https://www.tbi.univie.ac.at/RNA/)
+Must have scikit-learn installed: 
 
-`conda install -c bioconda viennarna`
-
-And Biopython (https://biopython.org)
-
-`conda install -c bioconda biopython`
+https://scikit-learn.org/stable/index.html
