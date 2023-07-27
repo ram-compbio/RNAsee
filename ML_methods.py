@@ -249,7 +249,7 @@ def random_forest_creation(vectors, negative_loc, positive_loc):
 #alpha = svm_creation('vector_file.csv')
 import pickle
 
-def scan_gene(ML_pickle, file_path, subset=[], scores=False):
+def scan_gene(ML_pickle, file_path, subset=[]):
   '''
   ML_pickle - str, filepath to a pickle file containing a ML model
     ML model must take as input the output of get_short_site_data function
@@ -268,7 +268,7 @@ def scan_gene(ML_pickle, file_path, subset=[], scores=False):
   chosen_sites = []
 
   # Uses ML model to predict class of all C sites
-  if subset:
+  if len(subset) > 0:
     for loc in subset:
       if seq[loc-1].lower() != 'c':
         continue
@@ -289,12 +289,12 @@ def scan_gene(ML_pickle, file_path, subset=[], scores=False):
 
   return chosen_sites
 
-def proba_scan_gene(svm_pickle, file_path, subset=None):
+def proba_scan_gene(ML_pickle, file_path, subset=None):
   '''
-  svm_pickle - str, filepath to a pickle file containing an SVM
+  ML_pickle - str, filepath to a pickle file containing an ML model
   file_path - str, filepath to the CDS file for the gene in question
   '''
-  with open(svm_pickle, 'rb') as pickle_file:
+  with open(ML_pickle, 'rb') as pickle_file:
     clf = pickle.load(pickle_file)
 
   with open(file_path, 'r') as gene_file:
@@ -320,7 +320,5 @@ def proba_scan_gene(svm_pickle, file_path, subset=None):
       score = clf.predict_proba(test_vector)[0][1]
       if score > 0.5:
         sites[i+1] = score
-
-      print('x', end='')
 
   return sites

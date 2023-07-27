@@ -8,10 +8,11 @@ def union(file_path, ML_model='current_model.pickle'):
     Defaults to current_model.pickle in same folder
   cutoff - int, number of top RNASee sites to consider
 
-  Returns list of ints, sites considered editing sites by ML model OR RNASee
+  Returns list of ints, sites considered editing sites by ML model OR
+    rules_based
   '''
   union_sites = ML_methods.scan_gene(ML_model, file_path)
-  see_output = rules_based_methods.scan_gene(file_path, threshold=9)['pos_c']
+  see_output = rules_based_methods.scan_gene(file_path, threshold=9, make_output=False)['pos_c']
 
   for loc in see_output.values:
     if loc not in union_sites:
@@ -25,9 +26,10 @@ def intersection(file_path, ML_model='current_model.pickle'):
   ML_model - str, path to pickle file with machine learning model
     Defaults to current_model.pickle in same folder
 
-  Returns list of ints, sites considered editing sites by ML model AND RNASee
+  Returns list of ints, sites considered editing sites by ML model AND
+    rules-based
   '''
-  see_output = rules_based_methods.scan_gene(file_path, threshold=9)['pos_c']
+  see_output = rules_based_methods.scan_gene(file_path, threshold=9, make_output=False)['pos_c']
   
   inter_sites = ML_methods.scan_gene(ML_model, file_path,\
                                    subset=see_output.values)
@@ -41,8 +43,8 @@ def both_consensus(file_path, ML_model='current_model.pickle'):
     Defaults to current_model.pickle in same folder
 
   Returns two lists of ints, union and intersection; faster than indv running
-    union - list of sites considered editing by ML OR RNASee
-    intersection - list of sites considered editing by ML AND RNASee
+    union - list of sites considered editing by ML OR rules-based
+    intersection - list of sites considered editing by ML AND rules-based
   '''
   ML_output = ML_methods.scan_gene(ML_model, file_path)
   see_output = rules_based_methods.scan_gene(file_path, threshold=9)['pos_c']
@@ -80,8 +82,8 @@ def both_consensus_sc(file_path, ML_model='current_model.pickle', subset=[]):
     Defaults to current_model.pickle in same folder
 
   Returns two lists of ints, union and intersection; faster than indv running
-    union - list of sites considered editing by ML OR RNASee
-    intersection - list of sites considered editing by ML AND RNASee
+    union - list of sites considered editing by ML OR rules-based
+    intersection - list of sites considered editing by ML AND rules-based
   '''
   ML_output = ML_methods.proba_scan_gene(ML_model, file_path, subset=subset)
   see_output = rules_based_methods.scan_gene(file_path, threshold=None,\

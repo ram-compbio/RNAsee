@@ -165,7 +165,7 @@ def scan_gene(seq, is_rna=False, cutoff=None, threshold=9, make_output=True, sub
         if make_output:
             df_all.to_csv('{}-top{}.tsv'.format(out, cutoff),sep='\t',float_format='%.2f')
     elif threshold != None:
-        df_all = df_all[df_all['score']>9]
+        df_all = df_all[df_all['score']>threshold]
         if make_output:
             df_all.to_csv('{}-thresh{}.tsv'.format(out, threshold),sep='\t',float_format='%.2f')
     else:
@@ -179,8 +179,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog="RNAsee", description="Search a sequence for putative RNA editing sites by APOBEC3A/G.")
     parser.add_argument('sequence', metavar='sequence', type=str, help="FASTA file for DNA seqeunce input.")
     parser.add_argument('--cutoff','-c', type=int, help="Return only the top X high-scoring values.")
-    parser.add_argument('--threshold', '-t', type=int, help="Return only the sites with a score of >= threshold.")
-    parser.add_argument('-v', '--version', action='version', version='%(prog)s v0.2')
+    parser.add_argument('--threshold', '-t', type=int, help="Return only the sites with a score of > threshold.")
+    parser.add_argument('-v', '--version', action='version', version='%(prog)s v2.0')
     parser.add_argument('--rna', action="store_true", help="The FASTA file is an RNA sequence (only A, U, G, C).")
     args=parser.parse_args()
     # Set variables
@@ -188,4 +188,4 @@ if __name__ == '__main__':
     is_rna = args.rna
     cutoff = args.cutoff
     threshold = args.threshold
-    df = see(seq, is_rna, cutoff=cutoff, threshold=threshold)
+    df = scan_gene(seq, is_rna, cutoff=cutoff, threshold=threshold)
