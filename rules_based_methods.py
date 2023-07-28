@@ -153,7 +153,7 @@ def scan_gene(seq, is_rna=False, cutoff=None, threshold=9, make_output=True, sub
             j += 1
 
     # Combine DataFrames and sort according to score
-    df_all = df_all.append([df4, df3], ignore_index=True)
+    df_all = df_all.append([df4, df3], ignore_index=True, sort=False)
     df_all = df_all.sort_values(by=['score', 'stem_len'],\
                                 ascending=[False, False])
     df_all = df_all.drop_duplicates(subset='pos_c', keep='first')
