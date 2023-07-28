@@ -7,12 +7,16 @@
 **RNA** **s**ite **e**diting **e**valuation (**RNAsee**) is a bioinformatic python script that predicts APOBEC3A/G mediated C>U edit sites for any gene.
 
 ## System Requirements
-RNAsee has been tested on Windows 10 and Linux machines. Most modern computers should be able to run RNAsee. Must have Python 3 and scikit-learn installed.
+RNAsee has been tested on Windows 10 version 10.0.19045 and Linux CentOS version 7.9.2009 machines. Most modern computers should be able to run RNAsee. Must have Python 3, Biopython, scikit-learn installed.
 
 ## Installation
-Python 3 and scikit-learn are required to run RNAsee. Scikit-learn version 0.24.2 was used to create the random forest model; while no errors have been observed when unpickling in a more recent version of scikit-learn, it is recommended that version 0.24.2 is installed. This can be done through a Python package manager like Anaconda or via pip using the command below:
+Python 3, Biopython, and scikit-learn are required to run RNAsee. Any version of Biopython is acceptable, and it may be installed through pip as follows:
 
-pip install scikit_learn==0.24.2
+```pip install Biopython```
+
+Scikit-learn version 0.24.2 was used to create the random forest model; while no errors have been observed when unpickling in a more recent version of scikit-learn, it is recommended that version 0.24.2 is installed. This can be done through a Python package manager like Anaconda or via pip using the command below:
+
+```pip install scikit_learn==0.24.2```
 
 RNAsee can be directly downloaded from this Github repository and run as invidiual scripts. On average, installation of scikit-learn and RNAsee should take less than a few minutes.
 
