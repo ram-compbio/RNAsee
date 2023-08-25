@@ -14,11 +14,11 @@ Python 3, Biopython, and scikit-learn are required to run RNAsee. Any version of
 
 ```pip install Biopython```
 
-Scikit-learn version 0.24.2 was used to create the random forest model; while no errors have been observed when unpickling in a more recent version of scikit-learn, it is recommended that version 0.24.2 is installed. This can be done through a Python package manager like Anaconda or via pip using the command below:
+Scikit-learn version 1.0.2 was used to create the random forest model; while no errors have been observed when unpickling in a more recent version of scikit-learn, it is recommended that version 1.0.2 is installed. This can be done through a Python package manager like Anaconda or via pip using the command below:
 
-```pip install scikit_learn==0.24.2```
+```pip install scikit-learn==1.0.2```
 
-RNAsee can be directly downloaded from this Github repository and run as invidiual scripts. On average, installation of scikit-learn and RNAsee should take less than a few minutes.
+RNAsee can be directly downloaded from this Github repository and run as invidiual scripts. To use the ML methods or consensus methods, the current_model.tar.gz file must be uncompressed and the original current_model.pickle file must be extracted. On average, installation of scikit-learn and RNAsee should take less than a few minutes.
 
 ## Usage
 Before using RNAsee, run the test file test.py. This will test the four major models (rules-based, random forest, union, and intersection) on predicting potential APOBEC3-mediated editing sites in 3 test files. The output should look as follows:
@@ -31,24 +31,52 @@ Running rules-based tests...
 [43 2197 3006 2572 2590 1212]
 
 Running ML tests...
-[170, 325, 384, 459, 1431, 1462, 2002, 2100, 2143]
-[132, 136, 649, 738]
-[43, 333, 344, 1054, 1876, 2634, 2646, 2831, 3006, 3033]
+[170, 445, 459, 1431, 1999, 2002, 2100, 2143]
+[136, 649, 738]
+[43, 344, 450, 1054, 1399, 1797, 1876, 2634, 2646, 2746, 2882, 2923, 3006]
 
 Running union tests...
-[170, 325, 384, 459, 1431, 1462, 2002, 2100, 2143, 1603, 2097, 1779]
-[132, 136, 649, 738, 590, 438, 79]
-[43, 333, 344, 1054, 1876, 2634, 2646, 2831, 3006, 3033, 2197, 2572, 2590, 1212]
+[170, 445, 459, 1431, 1999, 2002, 2100, 2143, 1603, 2097, 1779, 1462]
+[136, 649, 738, 590, 438, 79]
+[43, 344, 450, 1054, 1399, 1797, 1876, 2634, 2646, 2746, 2882, 2923, 3006, 2197, 2572, 2590, 1212]
 
 Running intersection tests...
-[1462]
+[]
 [136]
 [43, 3006]
 Done
 ```
 
-This test should take less than 2 minutes to run on an average computer.
+This test should take about 5 minutes to run on an average computer, with the ML and union tests taking the bulk of the time.
 
 It is recommended that most models are run from an interactive Python session. To run either of the non-consensus models, import the corresponding module (rules_based_methods or ML_methods) and run the scan_gene function with the filename of the correct RNA sequence. Note that ML_methods.scan_gene also requires the path to the model to be used, which is 'current_model.pickle' for the most up to date model. To run either or both consensus models, import consensus and run the union, intersection, or both_consensus functions with the filename of the correct RNA sequence. 
+
+Below is an example of the commands you could run to assess the cytosines in the gene SDHB using all four models, plus the expected output. Run these commands in an interactive session in the RNAsee-master folder:
+
+```
+>>> import rules_based_methods
+>>> rules_based_methods.scan_gene('test/sdhb-cds.fasta') # The output of this command will be a dataframe, and a file will also be generated.
+               rna             dna loop_len  ... score   aa_change aa_pos
+7   ccaucuaucgaugg  ccatctatcgatgg        4  ...    15      R -> *   46.0
+50   agcugccccagcu   agctgccccagct        3  ...    11      P -> L  197.0
+18   gcaacuucuaugc   gcaacttctatgc        4  ...    10  synonymous  146.0
+3        ccucccgag       cctcccgag        4  ...    10      R -> *   27.0
+>>> rules_based_methods.scan_gene('test/sdhb-cds.fasta')['pos_c'] # To just get the site numbers as output, use this command.
+7     136
+50    590
+18    438
+3      79
+Name: pos_c, dtype: object
+>>>
+>>> import ML_methods
+>>> ML_methods.scan_gene('current_model.pickle', 'test/sdhb-cds.fasta') # The ML methods need to have a model pickle specified in addition to the FASTA file.
+[136, 649, 738]
+>>> 
+>>> import consensus
+>>> consensus.union('test/sdhb-cds.fasta')
+[136, 649, 738, 590, 438, 79]
+>>> consensus.intersection('test/sdhb-cds.fasta')
+[136]
+```
 
 Coding sequence files are included in the examples and CCDS.tar.gz folders. Additional coding sequence files can be downloaded from https://www.ncbi.nlm.nih.gov/CCDS/CcdsBrowse.cgi. Non-coding sequence FASTA files may also be used, but note that RNAsee's performance has not been benchmarked on full RNA sequences or DNA sequences.
